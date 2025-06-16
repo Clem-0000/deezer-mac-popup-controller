@@ -9,12 +9,7 @@ import {
 } from "electron";
 import * as https from "https";
 import * as path from "path";
-
-interface TrackInfo {
-  title: string;
-  artist: string;
-  coverUrl?: string;
-}
+import { TrackInfo } from "./preload";
 
 interface CurrentTrack {
   title: string;
@@ -112,7 +107,8 @@ class DeezerController {
       this.lastTrackInfo &&
       this.lastTrackInfo.title === track.title &&
       this.lastTrackInfo.artist === track.artist &&
-      this.lastTrackInfo.coverUrl === track.coverUrl
+      this.lastTrackInfo.coverUrl === track.coverUrl &&
+      this.lastTrackInfo.isPlaying === track.isPlaying
     ) {
       return;
     }
@@ -129,7 +125,7 @@ class DeezerController {
 
     this.currentTrack.title = track.title || "Unknown Track";
     this.currentTrack.artist = track.artist || "Unknown Artist";
-    this.currentTrack.isPlaying = false;
+    this.currentTrack.isPlaying = track.isPlaying || false;
 
     // Only way to get the cover image is by downloading it using the URL
     if (track.coverUrl) {
@@ -294,14 +290,6 @@ class DeezerController {
   }
 
   sendCommand(actionName: ActionName): void {
-    if ("playButton" === actionName) {
-      this.currentTrack.isPlaying = !this.currentTrack.isPlaying;
-      this.buildTrayMenu();
-    }
-    if ("nextButton" === actionName || "prevButton" === actionName) {
-      this.currentTrack.isPlaying = true;
-      this.buildTrayMenu();
-    }
     if (
       this.deezerWindow &&
       this.deezerWindow.webContents &&

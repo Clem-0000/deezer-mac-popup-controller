@@ -1,16 +1,18 @@
 import { ipcRenderer } from "electron";
 
-let previousTrack: Track = { title: null, artist: null };
+let previousTrack: Track = { title: null, artist: null, isPlaying: false };
 
 interface Track {
   title: string | null;
   artist: string | null;
+  isPlaying: boolean;
 }
 
-interface TrackInfo {
+export interface TrackInfo {
   title: string | null;
   artist: string | null;
   coverUrl: string | null;
+  isPlaying: boolean;
 }
 
 function getTextByXPath(xpath: string): string | null {
@@ -49,6 +51,20 @@ function clickByTestId(buttonId: string): void {
   }
 }
 
+function getIsPlaying(): boolean {
+  const playPauseButton = document.querySelector(
+    '[data-testid^="play_button"]'
+  ) as HTMLElement | null;
+
+  if (playPauseButton) {
+    const currentTestId = playPauseButton.getAttribute("data-testid");
+    if (currentTestId === "play_button_pause") {
+      return true;
+    }
+  }
+  return false;
+}
+
 function getTrackInfo(): void {
   try {
     const title = getTextByXPath(
@@ -57,15 +73,25 @@ function getTrackInfo(): void {
     const artist = getTextByXPath(
       '//*[@id="page_player"]/div/div[1]/div[2]/div/div[2]/div/div/p/a'
     );
-
-    if (previousTrack.title === title && previousTrack.artist === artist) {
+    const isPlaying = getIsPlaying();
+    console.log("Track info:", { title, artist, isPlaying });
+    if (
+      previousTrack.title === title &&
+      previousTrack.artist === artist &&
+      previousTrack.isPlaying === isPlaying
+    ) {
       return;
     }
 
-    previousTrack = { title, artist };
+    previousTrack = { title, artist, isPlaying };
     const coverUrl = getCoverUrlByAlt(title);
 
-    const trackInfo: TrackInfo = { title, artist, coverUrl };
+    const trackInfo: TrackInfo = {
+      title,
+      artist,
+      coverUrl,
+      isPlaying,
+    };
     ipcRenderer.send("track-info", trackInfo);
   } catch (e) {
     console.error("❌ Error in getTrackInfo:", e);
