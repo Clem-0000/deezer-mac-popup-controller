@@ -3,20 +3,35 @@
   "version": "1.0.0",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
     "start": "npm run build && electron .",
+    "build": "tsc && electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "build": {
+    "appId": "com.example.deezer-menubar",
+    "productName": "Deezer Menubar",
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.music"
+    },
+    "files": [
+      "dist/**/*",
+      "preload.js",
+      "main.js",
+      "assets/**/*",
+      "package.json"
+    ]
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "clem-0000",
+  "description": "A menubar application for Deezer",
   "dependencies": {
-    "electron": "^36.3.1",
     "electron-reload": "^2.0.0-alpha.1"
   },
   "devDependencies": {
+    "electron": "^36.3.1",
     "@types/node": "^22.15.29",
+    "electron-builder": "^26.0.12",
     "typescript": "^5.8.3"
   }
 }

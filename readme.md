@@ -60,20 +60,35 @@ _(Caption: The Deezer window can be hidden for a discrete experience)_
     # or
     # yarn install
     ```
-3.  (Optional - If you plan to package the application) Build instructions:
+3.  Build the application:
+    To create a distributable application (e.g., a `.dmg` file on macOS), run:
     ```bash
-    npm run package # TODO
+    npm run build
     ```
+    This will compile the TypeScript code and then use `electron-builder` to package the application. The output will typically be in a `dist` folder.
 
 ## Usage
 
-1.  Launch the application:
+### Development
+
+1.  Launch the application in development mode:
     ```bash
     npm start
     # or
     # yarn start
     ```
-    A Deezer icon will appear in your menubar. Click on it to display the current track information and playback controls.
+    This command will first build the project and then launch Electron. A Deezer icon will appear in your menubar. Click on it to display the current track information and playback controls.
+    If this is your first time using the app, you may need to open the full Deezer page loaded by the app and enter your credentials.
+
+### Production (Using the Built Application)
+
+1.  After running `npm run build` (see Installation steps), navigate to the `dist` folder (or the specified output directory).
+2.  You will find the packaged application (e.g., `Deezer Menubar.dmg` on macOS).
+3.  **On macOS:**
+    - Open the `.dmg` file.
+    - Drag the `Deezer Menubar.app` icon to your `Applications` folder.
+    - Launch the application from your `Applications` folder.
+      The Deezer icon will appear in your menubar.
 
 ## Technologies Used
 
