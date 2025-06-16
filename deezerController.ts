@@ -5,6 +5,7 @@ import {
   ipcMain,
   Tray,
   NativeImage,
+  app,
 } from "electron";
 import * as https from "https";
 import * as path from "path";
@@ -213,6 +214,7 @@ class DeezerController {
     const repeatIcon = await this.getIcon("repeatIcon.png");
     const shuffleIcon = await this.getIcon("shuffleIcon.png");
     const openDeezerIcon = await this.getIcon("openDeezerIcon.png");
+    const quitIcon = await this.getIcon("quitIcon.png");
 
     const menuItems: Electron.MenuItemConstructorOptions[] = [
       {
@@ -256,6 +258,19 @@ class DeezerController {
         label: "Open Deezer",
         icon: openDeezerIcon || undefined,
         click: () => this.openDeezerFull(),
+      },
+      {
+        label: "Quit",
+        icon: quitIcon || undefined,
+        click: () => {
+          if (this.deezerWindow && !this.deezerWindow.isDestroyed()) {
+            this.deezerWindow.destroy();
+          }
+          if (this.tray && !this.tray.isDestroyed()) {
+            this.tray.destroy();
+          }
+          app.quit();
+        },
       },
     ];
 
